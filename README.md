@@ -67,3 +67,69 @@ After that, I jumped in to the excellent guide (remember the disclaimer? I recom
 8. User defaults from terminal
   - Enable repeating keys by pressing and holding down keys: `defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false`
   - Change the default folder for screensohts (create the folder first): `defaults write com.apple.screencapture location /path/to/screenshots/ && killall SystemUIServer`
+
+## Getting necessary apps aka HomeBrew
+I like packet managers and I cannot lie.
+
+Get HomeBrew, use it.
+
+First install XCode command line tools: `sudo xcode-select --install`
+
+After that, go to HomeBrew's website https://brew.sh/ and you can use the one-liner to install it, **AFTER YOU HAVE AT LEAST GLANCED THROUGH THE SCRIPT** don't just copy&paste that kind of installer script just because someone on GitHub says so.
+
+After that, here's a list of stuff I've found useful for me:
+
+```
+brew install \
+  tree \
+  berkeley-db \
+  git \
+  mpdecimal \
+  perl \
+  sqlite \
+  ca-certificates \
+  ipcalc \
+  ncurses \
+  vim \
+  gdbm \
+  libyaml \
+  readline \
+  xz \
+  gettext \
+  lua \
+  pcre2 \
+  ruby \
+  nmap 
+  
+brew install --cask \
+  xquartz \
+  cheatsheet \
+  rectangle \
+  vlc \
+  betterzip \
+  qlcolorcode \
+  quicklook-json \
+  chromium \
+  qlmarkdown \
+  spotify \
+  drawio \
+  qlprettypatch \
+  suspicious-package \
+  google-chrome \
+  qlstephen \
+  visual-studio-code \
+  keepassxc \
+  quicklook-csv \
+  webpquicklook \
+  wireshark
+```
+And to get virt-manager and virt-viewer I used this Brew tap + instructions https://github.com/Damenly/homebrew-virt-manager
+
+## Terminal stuff
+I opted for using Apple provided zsh (you can get one from brew also) and iTerm2 from their website https://iterm2.com/ - if you like, you can get iTerm2 also via brew.
+
+As for iTerm2 settings I recommend finding what suits you. To move between machines use these instructions: https://gitlab.com/gnachman/iterm2/-/wikis/Move-Settings-Between-Machines
+
+iTerm2 cheatsheet: https://gist.github.com/squarism/ae3613daf5c01a98ba3a
+
+As for zsh, I opted to use my legacy zshrc and combination with https://github.com/peterhil/zen - at this stage I again repeat my original point, I recommend the original source over my modifications for others expect me.
