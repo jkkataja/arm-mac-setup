@@ -1,0 +1,47 @@
+#!/usr/bin/env zsh
+#
+# ZPROFILE - run once on login shells
+#
+
+quiet stopwatch
+debug ZPROFILE
+
+#
+# Text editing - override these in ~/.zprofile.local if needed
+#
+export CHARSET='fi_FI.UTF-8'
+export DISPLAY=':0.0'
+
+if [[ -z "${EDITOR}" ]] ; then
+    export ALTERNATE_EDITOR='nano'
+    export EDITOR='vim'
+fi
+if [[ -n "${EDITOR}" && -z "${VISUAL}" ]] ; then
+  export VISUAL="${EDITOR}"
+fi
+
+export PAGER='less -F'
+export TZ='Europe/Helsinki'
+
+
+#
+# Paths
+#
+typeset -gU path
+path=(
+    ${ZDOTDIR:-$HOME}/bin
+    /opt/local/{bin,sbin}  # Macports or manually installed
+    /usr/local/{bin,sbin}
+    $path
+)
+export PATH
+export MANPATH="/opt/local/share/man:$MANPATH"
+
+#
+# Local zprofile
+#
+require "${ZDOTDIR:-$HOME}"/.zprofile.local
+
+
+debug_loadtime ZPROFILE
+debug

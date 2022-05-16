@@ -1,0 +1,47 @@
+#!/usr/bin/env zsh
+
+#
+# Shell utils
+#
+alias glsc='gls -lGN --color=auto'
+alias gl='glsc -l'
+alias gll='glsc -la'
+alias lll='lll -e@'
+
+#
+# Processes
+#
+alias agents='launchctl list | cut -f3 | grep -v Label | sort -u'
+alias cpu='ps -vxamrhw | more -EwSq~'
+alias mem='ps -xavh | more -EwSq~'
+alias psc='ps -ar $*| less'
+alias psm='ps -xamv $* | less'
+alias psr='ps -xvmr $* | less'
+alias zombies='ps -Av | grep " Z " | grep -v grep'
+
+#
+# Applications
+#
+alias app='open -a'
+alias chrome='open -a Google Chrome.app'
+
+
+# Edit Markdown files with an editor
+md() {
+    open -a MacDown $*
+}
+
+# Search in dash
+dash() {
+    open dash://$1
+}
+
+#
+# Property list files
+#
+alias plist-xml='plutil -convert xml1 -o - $1'
+alias plist='zargs -n1 -I{} plutil -convert xml1 -o - "{}"'
+alias plist-files="gfind . -name '*.plist' -printf '\n=== :: %p :: ===\n' -execdir plutil -convert xml1 -o - {} \;"
+
+# Work related stuff
+require "${ZDOTDIR:-$HOME}"/zsh/garden/aliases_work

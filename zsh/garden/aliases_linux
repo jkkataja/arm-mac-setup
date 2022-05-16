@@ -1,0 +1,38 @@
+#!/usr/bin/env zsh
+#
+# Linux aliases
+#
+
+alias l='\ls -lGN --color=auto'
+
+alias biggest_files='find . -type f -printf "%s %p\n" | sort -nr | head'
+alias smallest_files='find . -type f -printf "%s %p\n" | sort -n | head'
+alias dust='du -hxd2 --time'  # Tip: dust | sort -hr | head -n32
+
+# Apt
+alias apt-install='sudo apt-get install'
+alias apt-search='apt search'
+
+apt-apropos() {
+    apt search $* 2>/dev/null | grep -E '($*|)' | grep -E '^[[:alnum:]_-]+/' | cut -d'/' -f1
+}
+
+apt-query() {
+    dpkg-query -W $* | cut -f1
+}
+
+apt-size() {
+    apt show $* 2>/dev/null | \grep -E --color=never '(Package:|Size:|^$)'
+}
+
+autoload -U zargs
+apt-apropos-sizes() {
+    zargs -r -- $(apt-apropos $*) -- apt-size
+}
+
+# Wifi & networking
+alias wifiquality='iwconfig wlan0 | grep -i quality'
+alias wifisignal='iwconfig wlan0 | grep -i signal'
+alias wifiinfo='nmcli dev wifi'
+alias wifiwatch='watch -n 1 cat /proc/net/wireless'
+alias wifimonitor='wavemon'

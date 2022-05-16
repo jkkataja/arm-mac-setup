@@ -1,0 +1,92 @@
+#!/usr/bin/env zsh
+
+typeset -F SECONDS
+typeset -F PREV
+typeset -F NOW
+typeset -F START
+typeset -F DURA
+
+debug () {
+    [[ $ZSH_DEBUG = 1 ]] && echo "DEBUG: $*"
+}
+
+debug_loadtime () {
+    debug "$1 loaded in $(float_print $(stopwatch)) seconds"
+}
+
+quiet () {
+    $* >/dev/null
+}
+
+stopwatch () {
+    NOW=$SECONDS
+    echo $(( $NOW - ${PREV:-$NOW} ))
+    PREV=$NOW
+}
+
+quiet stopwatch
+debug TOOLS
+
+# Format floats with some precision, example:
+# % float_print(0.187 2)
+# 0,19
+float_print () {
+    local PRECISION="${2:-3}"
+    printf "%.$(echo $PRECISION)f" "$1"
+}
+
+# Execute a command and output the time it took as debug output
+timeit () {
+    local START=$SECONDS
+    $*
+    debug "    $(float_print $(($SECONDS - $START)) 4) > $*"
+}
+
+timestamp () {
+    date "+%Y%m%d%H%M%S"
+}
+
+nonempty () {
+    [[ -s "$1" ]] && echo "$1"
+}
+
+readable () {
+    [[ -r "$1" ]] && echo "$1"
+}
+
+sourceable () {
+    if test $(nonempty "$1") && test $(readable "$1"); then
+        echo "$1"
+    fi
+}
+
+_require () {
+    for file in $*; do
+        if test $(sourceable "$file"); then
+           source $file
+        fi
+    done
+}
+
+# Source a file. Does NOT throw error if file can not be sourced!
+require () {
+    timeit _require $*
+}
+
+# Test operating system type.
+#
+# Can be used in if statements like this:
+# if os_type 'Darwin'; then echo 'Apple is also thinking differently about Unix philosophy...'; fi
+os_type () {
+    test "$1" = $(uname -s)
+}
+
+process-count () {
+    ps -xe -o args | grep -s "$@" | grep -v grep | wc -l
+}
+
+not_running () {
+    test $(pgrep "$1" | wc -l) -lt 1
+}
+
+debug_loadtime TOOLS

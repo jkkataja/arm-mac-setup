@@ -1,0 +1,46 @@
+#!/usr/bin/env zsh
+#
+# ZSHENV - always sourced
+#
+# Order and purpose of files:
+#
+# every time:   zshenv
+# login once:   zprofile
+# interactive:  zshrc
+# login:        zlogin
+# logout:       zlogout
+
+# Startup debugging, use env variable or uncomment next line:
+# ZSH_DEBUG=1
+export ZSH_DEBUG=${ZSH_DEBUG:-0}
+
+. ~/zsh/garden/tools
+
+quiet stopwatch
+debug "ZSHENV"
+
+#
+# Environment - override these in ~/.zshenv.local if needed
+#
+export CHARSET='fi_FI.UTF-8'
+export DISPLAY=':0.0'
+export LC_ALL='fi_FI.UTF-8'
+export LC_CTYPE='fi_FI.UTF-8'
+export RSYNC_RSH='ssh'
+export TZ='Europe/Helsinki'
+
+#export USE_AGENTS=1
+
+[ -z "${LOGNAME}" ]	&& export LOGNAME=`whoami`
+[ -z "{$USER}" ]	&& export USER=$LOGNAME
+[ -z "${HOST}" ]	&& export HOST=`hostname`
+[ -z "${ARCH}" ]	&& export ARCH=`uname -m`
+[ -z "${SYSTEM}" ]	&& export SYSTEM=`uname -s`
+
+#
+# Local zshenv
+#
+require "${ZDOTDIR:-$HOME}"/.zshenv.local
+
+debug_loadtime ZSHENV
+debug

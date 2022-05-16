@@ -121,7 +121,9 @@ brew install --cask \
   keepassxc \
   quicklook-csv \
   webpquicklook \
-  wireshark
+  wireshark \
+  balenaetcher \
+  paintbrush
 ```
 And to get virt-manager and virt-viewer I used this Brew tap + instructions https://github.com/Damenly/homebrew-virt-manager
 
@@ -133,3 +135,46 @@ As for iTerm2 settings I recommend finding what suits you. To move between machi
 iTerm2 cheatsheet: https://gist.github.com/squarism/ae3613daf5c01a98ba3a
 
 As for zsh, I opted to use my legacy zshrc and combination with https://github.com/peterhil/zen - at this stage I again repeat my original point, I recommend the original source over my modifications for others expect me.
+
+If you still want to continue and use my setup, head to the zsh folder.
+
+### ssh + vim
+Also included here are example ssh-config for useful stuff and also my current vimrc which is in horrible shape as I haven't given it the attention it needs. Go for The Ultimate vimrc and save yourself a lot of trouble.
+
+Add your ssh key(s) to the Keychain, instructions here: https://rob.cr/blog/using-ssh-agent-mac-os-x/#:~:text=SSH%20agent%20allows%20a%20user,the%20pass%20phrase(s).
+
+
+
+
+## Virtualization
+In my work, I usually want to connect to multiple different networks at the same time and test various connectivity related stuff and make sure that the traffic goes through the network under test and not locally. As such, one simple way to achieve this is to use VMs connected to different VLAN IDs.
+
+Obviously, things are never so simple as I just couldn't attaching VM interface to VLAN interface to work. During debugging, I noticed that egress packets were fine but ingress packets were malformed. More details are currently available at https://github.com/utmapp/UTM/issues/3902
+
+So local VMs for this task are a no-go. Let's just setup Linux machine and run the VMs there are connect to them using Spice? Yeah, otherwise it's nice but I didn't get copy&paste working between my Mac and the target VM.
+
+Eventually, I got annoyed and decided to do a ugly shell-script to help me in:
+  - connecting to the VMs using virt-viewer (we get ssh-connection to connect, no need to hazzle with Spice security setup)
+  - able to paste stuff to the VM either from cli or file on my Mac.
+
+It can be found in bin/vm-helper.sh 
+
+Useful links and source for the above:
+https://johnsiu.com/blog/macos-kvm-remote-connect/
+https://gist.github.com/nhoriguchi/9425402
+
+
+## Docker
+I'll be using colima
+
+```
+brew install docker
+brew install docker-compose
+brew install colima
+```
+
+Example of starting it with reasonable\* (\*YMMV) parameters:
+`colima start --cpu 4 --memory 4 --mount /Users/$USER/git:w --mount /Users/$USER/.ssh:w --mount /Users/$USER/.ansible:w --mount /Users/$USER/Downloads:w`
+
+
+

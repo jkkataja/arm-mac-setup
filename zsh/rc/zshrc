@@ -1,0 +1,136 @@
+#!/usr/bin/env zsh
+#
+# ZSHRC - run on interactive shells
+#
+
+quiet stopwatch
+debug ZSHRC
+
+
+#
+# Command history
+# http://zsh.sourceforge.net/Doc/Release/Options.html#History
+#
+export HISTFILE=~/.zhistory
+export HISTSIZE=10000
+export SAVEHIST=50000
+
+# Ignore duplicates commands in the historylog
+#
+# ignorespace	| don't save lines which begin with a <space> character
+# ignoredups	| don't save lines matching the previous history entry
+# ignoreboth	| use both 'ignorespace' and 'ignoredups'
+# erasedups	  | eliminate duplicates across the whole history
+export HISTCONTROL=$HISTCONTROL${HISTCONTROL+:}ignoreboth
+
+# Make some commands not show up in history
+export HISTIGNORE=${HISTIGNORE:-"shutdown*:halt*:poweroff*:rm -rf*"}
+
+# Add the date to the historylog
+export HISTTIMEFORMAT=${HISTTIMEFORMAT:-"%Y-%m-%d %H:%M:%S"}
+
+#
+# Options
+#
+setopt append_history
+#setopt auto_cd
+#setopt auto_menu
+#setopt auto_pushd
+#setopt chase_dots
+setopt hist_expire_dups_first
+setopt hist_find_no_dups
+setopt hist_no_functions
+setopt hist_reduce_blanks
+setopt share_history
+setopt notify
+unsetopt beep
+#unsetopt correct_all
+
+# Misc shell settings
+setopt no_ignore_eof
+limit coredumpsize 0
+bindkey -e
+mesg y
+echo "Terminal type is ${TERM}"
+
+#
+# Key bindings
+#
+#bindkey -e
+# History search keys (Use Ctrl-V to find the ANSI escape sequences)
+bindkey '^[[1;5A' history-beginning-search-backward  # C-up
+bindkey '^[[1;5B' history-beginning-search-forward  # C-down
+
+
+# Prompt
+if test 'root' = $(whoami); then
+    PROMPT='[%?] %F{green}%B%n%b%f@%F{#ff0000}%m%f %F{yellow}%~%f %B%#%b '
+else
+    PROMPT='[%?] %F{green}%B%n%b%f@%F{#ff0000}%m%f %F{yellow}%~%f %B%#%b '
+
+fi
+
+#
+# Zen garden
+#
+require "${ZDOTDIR:-$HOME}"/zsh/garden/aliases
+require "${ZDOTDIR:-$HOME}"/zsh/garden/utils
+require "${ZDOTDIR:-$HOME}"/zsh/garden/functions
+
+# GPG and SSH agents
+#if test "$USE_AGENTS" -ne 0 ; then
+#    ssh-agent-start
+#    gpg-agent-start
+#fi
+
+
+#
+# Local zshrc
+#
+require "${ZDOTDIR:-$HOME}"/.zshrc.local
+
+debug_loadtime ZSHRC
+debug
+
+# Zsh command completion init
+zmodload zsh/complist
+autoload -U compinit
+compinit
+
+# Hostname completion from SSH client known_hosts files.
+local _myhosts;
+_myhosts=( ${${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*} ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*} );
+zstyle ':completion:*' hosts $_myhosts;
+
+# Remove trailing slashes (mainly useful with ln(1))
+zstyle ':completion:*' squeeze-slashes true
+
+# Complete in middle of text ignoring the suffix.
+# E.g. '/usr/loc<TAB>bin' would expand to '/usr/local/bin'.
+bindkey '^i' expand-or-complete-prefix
+
+# Make completion aware of new commands automatically (that is, without
+# manual 'rehash').
+_force_rehash() {
+  (( CURRENT == 1 )) && rehash
+  return 22	# Because we didn't really complete anything
+}
+
+zstyle ':completion:*' completer \
+  _oldlist _expand _force_rehash _complete _approximate
+
+zstyle -e ':completion:*:approximate:*' max-errors 'reply=( $(( ($#PREFIX + $#SUFFIX) / 3 )) )'
+zstyle ':completion:*:descriptions' format "- %d -"
+zstyle ':completion:*:corrections' format "- %d - (errors %e})"
+zstyle ':completion:*:default' list-prompt '%S%M matches%s'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:manuals' separate-sections true
+zstyle ':completion:*:manuals.(^1*)' insert-sections true
+zstyle ':completion:*' menu select
+zstyle ':completion:*' verbose yes
+
+# Finally, return a true value.
+:
+
+
+# EOF
