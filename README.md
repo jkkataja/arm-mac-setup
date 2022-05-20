@@ -99,7 +99,8 @@ brew install \
   lua \
   pcre2 \
   ruby \
-  nmap 
+  nmap \
+  watch
   
 brew install --cask \
   xquartz \
