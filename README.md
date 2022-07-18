@@ -124,7 +124,8 @@ brew install --cask \
   webpquicklook \
   wireshark \
   balenaetcher \
-  paintbrush
+  paintbrush \
+  krita
 ```
 And to get virt-manager and virt-viewer I used this Brew tap + instructions https://github.com/Damenly/homebrew-virt-manager
 
